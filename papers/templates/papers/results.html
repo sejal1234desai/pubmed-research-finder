@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5ebe0; /* Beige */
+            color: #4b0082; /* Dark Purple */
+            text-align: center;
+            padding: 30px;
+        }
+        h1 {
+            color: #6a0dad; /* Purple */
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #6a0dad;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f8f0e3; /* Light Beige */
+        }
+        .btn-container {
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 15px;
+            background: #6a0dad;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background: #4b0082;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Results</h1>
+    {% if papers %}
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Publication Date</th>
+                <th>Authors</th>
+                <th>Company Affiliation</th>
+                <th>Corresponding Author Email</th>
+            </tr>
+            {% for paper in papers %}
+            <tr>
+                <td>{{ paper.Title }}</td>
+                <td>{{ paper.Publication_Date }}</td>
+                <td>{{ paper.Non_academic_Authors }}</td>
+                <td>{{ paper.Company_Affiliations }}</td>
+                <td>{{ paper.Corresponding_Author_Email }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="btn-container">
+            <a href="{% url 'home' %}" class="btn">Back to Search</a>
+            <a href="{% url 'download_csv' %}?query={{ request.GET.query }}" class="btn">Download CSV</a>
+        </div>
+
+    {% else %}
+        <p>No results found. Try a different search term.</p>
+        <a href="{% url 'home' %}" class="btn">Back to Search</a>
+    {% endif %}
+</body>
+</html>
+

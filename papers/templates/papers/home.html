@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Research Paper Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5ebe0; /* Beige */
+            color: #4b0082; /* Dark Purple */
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #6a0dad; /* Purple */
+        }
+        form {
+            background: #ffffff;
+            padding: 20px;
+            display: inline-block;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            padding: 10px;
+            border: 2px solid #6a0dad;
+            border-radius: 5px;
+            margin-right: 10px;
+            outline: none;
+        }
+        button {
+            background: #6a0dad;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #4b0082;
+        }
+        p {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Research Papers</h1>
+    <form action="{% url 'search_papers' %}" method="GET">
+        <input type="text" name="query" placeholder="Enter search query">
+        <button type="submit">Search</button>
+    </form>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+</body>
+</html>
+
+

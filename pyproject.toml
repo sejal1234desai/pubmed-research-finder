@@ -1,0 +1,23 @@
+[project]
+name = "pubmed-project"
+version = "0.1.0"
+description = "A PubMed paper extraction project"
+authors = [
+    {name = "sejal1234desai", email = "126679461+sejal1234desai@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "requests",
+    "pandas",
+    "lxml",
+    "xmltodict (>=0.14.2,<0.15.0)",
+    "argparse (>=1.4.0,<2.0.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+get-papers-list = "cli:main"
