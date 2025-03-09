@@ -8,18 +8,29 @@ PUBMED_SEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 PUBMED_SUMMARY_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
 PUBMED_FETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"  # ✅ Needed for full email extraction
 
-def fetch_paper_ids(query: str) -> List[str]:
+import requests
+import xml.etree.ElementTree as ET
+
+def fetch_paper_ids(query: str):
     """Fetch paper IDs from PubMed based on a search query."""
     params = {
         "db": "pubmed",
         "term": f"{query} AND (medicine OR healthcare OR clinical OR diagnosis OR treatment)[Title/Abstract]",
         "retmode": "json",
-        "retmax": 15  # Fetch more results
+        "retmax": 15
     }
-    response = requests.get(PUBMED_SEARCH_URL, params=params)
-    response.raise_for_status()
-    data = response.json()
-    return data.get("esearchresult", {}).get("idlist", [])
+    
+    try:
+        response = requests.get(PUBMED_SEARCH_URL, params=params, timeout=10)  # Add timeout
+        response.raise_for_status()  # Raise an error for bad responses
+        data = response.json()
+        return data.get("esearchresult", {}).get("idlist", [])
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error fetching paper IDs: {e}")
+        return []
+    except ValueError:
+        print("❌ Error: Received invalid JSON response from PubMed.")
+        return []
 
 def fetch_paper_details(paper_ids: List[str]) -> Dict:
     """Fetch paper details from PubMed using paper IDs (XML parsing)."""

@@ -1,4 +1,5 @@
 import argparse
+import sys
 import pandas as pd
 from papers.utils import get_papers
 
@@ -11,14 +12,26 @@ def main():
     
     args = parser.parse_args()
 
+    if not args.query.strip():
+        print("❌ Error: Search query cannot be empty.")
+        sys.exit(1)
+
     if args.debug:
         print(f"🔍 Debug Mode: Searching for '{args.query}'")
-    
+
     df = get_papers(args.query)
 
+    if df.empty:
+        print("⚠️ No relevant papers found.")
+        sys.exit(0)
+
     if args.file:
-        df.to_csv(args.file, index=False)
-        print(f"📂 Results saved to {args.file}")
+        try:
+            df.to_csv(args.file, index=False)
+            print(f"✅ Results saved to {args.file}")
+        except Exception as e:
+            print(f"❌ Error saving file: {e}")
+            sys.exit(1)
     else:
         print(df.to_string(index=False))
 
