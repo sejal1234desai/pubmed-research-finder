@@ -26,10 +26,10 @@ def fetch_paper_ids(query: str):
         data = response.json()
         return data.get("esearchresult", {}).get("idlist", [])
     except requests.exceptions.RequestException as e:
-        print(f"❌ Error fetching paper IDs: {e}")
+        print(f" Error fetching paper IDs: {e}")
         return []
     except ValueError:
-        print("❌ Error: Received invalid JSON response from PubMed.")
+        print(" Error: Received invalid JSON response from PubMed.")
         return []
 
 def fetch_paper_details(paper_ids: List[str]) -> Dict:
@@ -39,15 +39,15 @@ def fetch_paper_details(paper_ids: List[str]) -> Dict:
         "id": ",".join(paper_ids),
         "retmode": "xml"
     }
-    response = requests.get(PUBMED_FETCH_URL, params=params)  # ✅ Use efetch for full details
+    response = requests.get(PUBMED_FETCH_URL, params=params)  #  Use efetch for full details
     
     if response.status_code != 200:
-        print(f"⚠️ API Request Failed! Status Code: {response.status_code}")
+        print(f"⚠ API Request Failed! Status Code: {response.status_code}")
         print(f"Response Text: {response.text}")
         return {}
 
     try:
-        root = ET.fromstring(response.text)  # ✅ Parse XML response
+        root = ET.fromstring(response.text)  # Parse XML response
         papers = {}
 
         for article in root.findall(".//PubmedArticle"):
@@ -69,7 +69,7 @@ def fetch_paper_details(paper_ids: List[str]) -> Dict:
                 authors.append(full_name)
                 affiliations.append(affiliation)
 
-            # ✅ Extract Corresponding Author Email (If Available)
+            # Extract Corresponding Author Email (If Available)
             email_match = article.find(".//Affiliation").text if article.find(".//Affiliation") is not None else None
             if email_match and "@" in email_match:
                 corresponding_email = email_match.split()[-1]  # Extract last word (email)
@@ -85,7 +85,7 @@ def fetch_paper_details(paper_ids: List[str]) -> Dict:
         return papers
 
     except ET.ParseError:
-        print("❌ Error: Failed to parse API response as XML!")
+        print(" Error: Failed to parse API response as XML!")
         print(f"Response Text: {response.text}")
         return {}
 
@@ -117,7 +117,7 @@ def extract_non_academic_authors(authors, affiliations):
             non_academic.append({"name": author, "company": "Academic Institution"})
         
         else:
-            non_academic.append({"name": author, "company": affiliation})  # ✅ If not classified, retain original affiliation
+            non_academic.append({"name": author, "company": affiliation})  #  If not classified, retain original affiliation
 
     return non_academic
 
@@ -132,12 +132,12 @@ def get_papers(query):
         authors = paper.get("authors", [])
         affiliations = paper.get("affiliations", [])
         
-        # ✅ Extract email from affiliation (if present)
+        #  Extract email from affiliation (if present)
         email_match = None
         for aff in affiliations:
-            if "@" in aff:  # ✅ Check for an email pattern
-               email_match = aff.split()[-1]  # ✅ Extract last word (email)
-               break  # ✅ Stop at first found email
+            if "@" in aff:  #  Check for an email pattern
+               email_match = aff.split()[-1]  #  Extract last word (email)
+               break  # ✅Stop at first found email
    
         corresponding_email = email_match if email_match else "N/A"
 
